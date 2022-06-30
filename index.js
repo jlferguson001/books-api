@@ -1,11 +1,12 @@
 //connects to .env
-require('dotenv').config()
-
-//express application
 const express= require('express')
-const app = express()
 const mongoose = require('mongoose')
+ const cors = require('cors')
+
+require('dotenv').config()
+const app = express()
 app.use(express.json())
+
 
 //connect to mongoose
 mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopology: true}, 
@@ -13,6 +14,7 @@ mongoose.connect(process.env.MONGO_URI, {useNewUrlParser: true, useUnifiedTopolo
 )
 
 //Middleware
+ 
 app.use(express.urlencoded({extended: true}))
 
 //route to /page
@@ -20,7 +22,12 @@ app.get('/', (req, res) => {
     res.send('Jenni\s Book World')
 })
 
+//books
+const booksController = require('./controllers/books_controller.js')
+app.use('/books', booksController)
+
+//404
 app.get('*', (req, res) => {
-    res.status(404).send('<h1>404 Page<h1>')
+    res.send('404')
 })
 app.listen(process.env.PORT)
